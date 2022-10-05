@@ -1,6 +1,7 @@
 Отчёт по итогам тестирования
 
 https://fqa-9-thesis-gradle-report.vercel.app/
+
 https://fqa-9-thesis-gradle-mysql-report.netlify.app/
 
 Тестовые сценарии отрабатывались в контексте непосредственной оплаты, а также для кредитной линии (Happy path&Unhappy path). При этом проверялась корректность внесения информации в две базы данных: PostgreSQL (default database) и MySQL.
