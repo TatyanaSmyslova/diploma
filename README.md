@@ -14,6 +14,8 @@
 
 Чтобы задействовать MySQL необходимо:
 
-включить `SUT` командой `java -jar aqa-shop.jar --spring.datasource.url=jdbc:mysql://localhost:3306/app`;
+включить `SUT` командой 
+`java -jar aqa-shop.jar --spring.datasource.url=jdbc:mysql://localhost:3306/app`;
 
-запустить автотесты командой `./gradlew clean test -Ddb.url=jdbc:mysql://localhost:3306/app`.
+запустить автотесты командой 
+`./gradlew clean test -Ddb.url=jdbc:mysql://localhost:3306/app`.
