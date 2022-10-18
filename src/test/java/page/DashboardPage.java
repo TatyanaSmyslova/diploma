@@ -3,24 +3,24 @@ package page;
 import com.codeborne.selenide.SelenideElement;
 
 import static com.codeborne.selenide.Condition.*;
-import static com.codeborne.selenide.Selenide.*;
+import static com.codeborne.selenide.Selenide.$$;
+
 
 public class DashboardPage {
-    private static SelenideElement heading = $(".heading_size_l");
-    private static SelenideElement paymentButton = $$(".button .button__text").find(exactOwnText("Купить"));
-    private static SelenideElement creditButton = $$(".button .button__text").find(text("кредит"));
+    private final SelenideElement paymentButton = $$("button").find(exactText("Купить"));
+    private final SelenideElement creditButton = $$("button").find(exactText("Купить в кредит"));
+    private final SelenideElement payCard = $$("h3").find(text("Оплата по карте"));
+    private final SelenideElement payCredit = $$("h3").find(text("Кредит по данным карты"));
 
-    public DashboardPage() {
-        heading.shouldBe(visible).shouldHave(exactOwnText("Путешествие дня"));
-    }
-
-    public PaymentPage goToPaymentPage() {
+    public PaymentPage payByDebitCard() {
         paymentButton.click();
+        payCard.shouldBe(visible);
         return new PaymentPage();
     }
 
-    public CreditPage goToCreditPage() {
+    public PaymentPage payByCreditCard() {
         creditButton.click();
-        return new CreditPage();
+        payCredit.shouldBe(visible);
+        return new PaymentPage();
     }
 }

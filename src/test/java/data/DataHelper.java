@@ -1,56 +1,56 @@
 package data;
 
-import com.github.javafaker.Faker;
 import lombok.Value;
 
-import java.util.Random;
-
 public class DataHelper {
-    private DataHelper() {
-    }
-
-    private static String getCardNumber(String card) {
-        switch (card.toLowerCase()) {
-            case ("approved"):
-                return "4444 4444 4444 4441";
-            case ("declined"):
-                return "4444 4444 4444 4442";
-            default:
-                return "4444 4444 4444 4444";
-        }
-    }
-
-    private static String getFullName() {
-        return new Faker().name().firstName().toUpperCase() + " " + new Faker().name().firstName().toUpperCase();
-    }
-
-    private static String getCvcCvv() {
-        Random dgt = new Random();
-        return String.valueOf(dgt.nextInt(10)) + dgt.nextInt(10) + dgt.nextInt(10);
-    }
+    static DateGenerator dateGenerator = new DateGenerator();
 
     @Value
-    public static class RequiredFields {
+    public static class CardInfo {
         String cardNumber;
-        String month;
         String year;
+        String month;
         String owner;
-        String cvcCvv;
+        String cvc;
     }
 
-    public static RequiredFields getValidApprovedFields() {
-        return new RequiredFields(getCardNumber("APPROVED"), "12", "26", getFullName(), getCvcCvv());
+    public static CardInfo getApprovedCardInformation() {
+        return new CardInfo(DateGenerator.getApprovedCardNumber(), dateGenerator.getValidExpirationDate().getYear(), dateGenerator.getValidMonth().getMonth(), DateGenerator.getValidOwner(), DateGenerator.getValidCvc());
     }
 
-    public static RequiredFields getValidDeclinedFields() {
-        return new RequiredFields(getCardNumber("DECLINED"), "12", "26", getFullName(), getCvcCvv());
+    public static CardInfo getDeclinedCardInformation() {
+        return new CardInfo(DateGenerator.getDeclinedCardNumber(), dateGenerator.getValidExpirationDate().getYear(), dateGenerator.getValidMonth().getMonth(), DateGenerator.getValidOwner(), DateGenerator.getValidCvc());
     }
 
-    public static RequiredFields getInvalidCardFields() {
-        return new RequiredFields(getCardNumber("INVALID"), "12", "26", getFullName(), getCvcCvv());
+    public static CardInfo getInvalidCardInformation() {
+        return new CardInfo(DateGenerator.getInvalidCardNumber(), dateGenerator.getValidExpirationDate().getYear(), dateGenerator.getValidMonth().getMonth(), DateGenerator.getValidOwner(), DateGenerator.getValidCvc());
     }
 
-    public static RequiredFields getInvalidOwnerFields() {
-        return new RequiredFields(getCardNumber("APPROVED"), "12", "26", "ъ", getCvcCvv());
+    public static CardInfo getExpiredMonthCardInformation() {
+        return new CardInfo(DateGenerator.getApprovedCardNumber(), dateGenerator.getCurrentYear().getYear(), dateGenerator.getExpiredMonth().getMonth(), DateGenerator.getValidOwner(), DateGenerator.getValidCvc());
+    }
+
+    public static CardInfo getExpiredYearCardInformation() {
+        return new CardInfo(DateGenerator.getApprovedCardNumber(), dateGenerator.getExpiredYear().getYear(), dateGenerator.getValidMonth().getMonth(), DateGenerator.getValidOwner(), DateGenerator.getValidCvc());
+    }
+
+    public static CardInfo getInvalidExpirationDateCardInformation() {
+        return new CardInfo(DateGenerator.getApprovedCardNumber(), dateGenerator.getInvalidExpirationDate().getYear(), dateGenerator.getValidMonth().getMonth(), DateGenerator.getValidOwner(), DateGenerator.getValidCvc());
+    }
+
+    public static CardInfo getEmptyCardInformation() {
+        return new CardInfo(" ", " ", " ", " ", " ");
+    }
+
+    public static CardInfo getValidCardNumberWithInvalidOtherFields() {
+        return new CardInfo(DateGenerator.getApprovedCardNumber(), dateGenerator.getInvalidYear().getYear(), dateGenerator.getInvalidMonth().getMonth(), DateGenerator.getInvalidOwner(), DateGenerator.getInvalidCvc());
+    }
+
+    public static CardInfo getInvalidOwnerCard() {
+        return new CardInfo(DateGenerator.getApprovedCardNumber(),
+                dateGenerator.getValidExpirationDate().getYear(),
+                dateGenerator.getValidMonth().getMonth(),
+                DateGenerator.getInvalidOwner(),
+                DateGenerator.getValidCvc());
     }
 }
