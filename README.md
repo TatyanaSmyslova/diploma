@@ -1,23 +1,45 @@
-Процедура запуска автотестов
+Запуск авто-тестов
 
-Необходимое окружение:
-1. Docker Desktop
-2. Eclipse Temurin OpenJDK
+Шаги по воспроизведению :
 
-Запуск
-1. Получить [код репозитория](https://github.com/TatyanaSmyslova/diploma) удобным способом
-2. Выполнить (в каталоге [Docker](https://github.com/TatyanaSmyslova/diploma/tree/master/Docker)) `docker-compose up -d`.
-3. Включить `SUT` командой `java -jar aqa-shop.jar`.
-4. Запустить автотесты командой `./gradlew clean test`.
+1. Запустить в Docker контейнеры СУБД MySQl, PostgerSQL и Node.js
+2. Запустить контейнеры в терминале
 
-Переключение баз данных
+`docker-compose up`
 
-Чтобы задействовать MySQL необходимо:
+3. Запустить SUT командой
 
-включить `SUT` командой 
+для MySQL:
 
-`java -jar aqa-shop.jar --spring.datasource.url=jdbc:mysql://localhost:3306/app`;
+`java -Dspring.datasource.url=jdbc:mysql://localhost:3306/app -jar artifacts/aqa-shop.jar`
 
-запустить автотесты командой 
+для PostgreSQL:
 
-`./gradlew clean test -Ddb.url=jdbc:mysql://localhost:3306/app`.
+`java -Dspring.datasource.url=jdbc:postgresql://localhost:5433/app -jar artifacts/aqa-shop.jar`
+
+Приложение должно запуститься на:
+
+`http://localhost:8080/`
+
+4. Запустить авто-тесты командой
+
+для MySQL:
+
+`gradlew clean test -Durl=jdbc:mysql://localhost:3306/app`
+
+для PostgreSQL:
+
+`gradlew clean test -Durl=jdbc:postgresql://localhost:5433/app`
+
+5. Сгенерировать отчеты
+
+`gradlew allureReport`
+`gradlew allureServe`
+
+Для завершения работы allureServe выполнить команду:
+
+`Ctrl + С далее Y`
+
+Остановить и удалить все контейнеры
+
+`docker-compose down`
