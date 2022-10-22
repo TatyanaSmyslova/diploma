@@ -15,7 +15,7 @@ import static com.codeborne.selenide.Selenide.$$;
 import static java.time.Duration.*;
 import static com.codeborne.selenide.Selectors.byText;
 
-public class PaymentPage {
+public class CreditPage {
 
     private SelenideElement heading = $$("h3").findBy(Condition.text("Оплата по карте"));
     private SelenideElement cardNumberField = $("input[placeholder='0000 0000 0000 0000']");
@@ -26,7 +26,7 @@ public class PaymentPage {
     private SelenideElement continueButton = $$("button").findBy(Condition.text("Продолжить"));
 
 
-    public PaymentPage() {
+    public CreditPage() {
         heading.shouldBe(Condition.visible);
     }
 
@@ -38,6 +38,7 @@ public class PaymentPage {
         cvcField.setValue(cardInfo.getCvc());
         continueButton.click();
     }
+
 
     public void checkSuccessNotification() {
         $(".notification_status_ok").shouldBe(Condition.visible, Duration.ofMillis(15000));

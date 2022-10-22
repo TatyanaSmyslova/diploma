@@ -18,9 +18,9 @@ public class DashboardPage {
         return new PaymentPage();
     }
 
-    public PaymentPage payByCreditCard() {
+    public CreditPage payByCreditCard() {
         creditButton.click();
         payCredit.shouldBe(visible);
-        return new PaymentPage();
+        return new CreditPage();
     }
 }

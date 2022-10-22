@@ -16,11 +16,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class TestCreditCard {
 
-    DashboardPage dashboardPage = new DashboardPage();
+    DashboardPage dashboardPage;
 
     @BeforeEach
     void setup() {
         open("http://localhost:8080");
+        dashboardPage = new DashboardPage();
         Selenide.clearBrowserCookies();
         Selenide.clearBrowserLocalStorage();
     }
@@ -38,84 +39,228 @@ public class TestCreditCard {
 
     @org.junit.jupiter.api.Test
     void shouldPayByApprovedCreditCard() {
-        val paymentPage = dashboardPage.payByCreditCard();
+        val creditPage = dashboardPage.payByCreditCard();
         val approvedCardInformation = DataHelper.getApprovedCardInformation();
-        paymentPage.enterCardInfo(approvedCardInformation);
-        paymentPage.waitSuccessNotification();
+        creditPage.enterCardInfo(approvedCardInformation);
+        creditPage.checkSuccessNotification();
         val creditStatus = DbHelper.getCreditEntity();
         assertEquals("APPROVED", creditStatus);
     }
 
     @org.junit.jupiter.api.Test
     void shouldPayByDeclinedCreditCard() {
-        val paymentPage = dashboardPage.payByCreditCard();
+        val creditPage = dashboardPage.payByCreditCard();
         val declinedCardInformation = DataHelper.getDeclinedCardInformation();
-        paymentPage.enterCardInfo(declinedCardInformation);
-        paymentPage.waitErrorNotification();
-        val creditStatus = DbHelper.getCreditEntity();
+        creditPage.enterCardInfo(declinedCardInformation);
+        creditPage.checkDeclineNotification();
+        val creditStatus = DbHelper.getPaymentEntity();
         assertEquals("DECLINED", creditStatus);
     }
 
     @org.junit.jupiter.api.Test
     void shouldPayByCreditCardWithInvalidNumber() {
-        val paymentPage = dashboardPage.payByCreditCard();
+        val creditPage = dashboardPage.payByCreditCard();
         val invalidCardInformation = DataHelper.getInvalidCardInformation();
-        paymentPage.enterCardInfo(invalidCardInformation);
-        paymentPage.checkInvalidCardNumber();
+        creditPage.enterCardInfo(invalidCardInformation);
+        creditPage.checkInvalidFormat();
+    }
+
+    @org.junit.jupiter.api.Test
+    void shouldPayByCreditCardWithEmptyFieldNumber() {
+        val creditPage = dashboardPage.payByCreditCard();
+        val emptyCardInformation = DataHelper.getEmptyCardInformation();
+        creditPage.enterCardInfo(emptyCardInformation);
+        creditPage.emptyField();
     }
 
     @org.junit.jupiter.api.Test
     void shouldPayByCreditCardWithExpiredYear() {
-        val paymentPage = dashboardPage.payByCreditCard();
+        val creditPage = dashboardPage.payByCreditCard();
         val expiredYearCardInformation = DataHelper.getExpiredYearCardInformation();
-        paymentPage.enterCardInfo(expiredYearCardInformation);
-        paymentPage.checkExpiredYearMessage();
+        creditPage.enterCardInfo(expiredYearCardInformation);
+        creditPage.checkExpiredDate();
+    }
+
+    @org.junit.jupiter.api.Test
+    void shouldPayByCreditCardWithEmptyFieldYear() {
+        val creditPage = dashboardPage.payByCreditCard();
+        val emptyYearCardInformation = DataHelper.getEmptyYearCardInformation();
+        creditPage.enterCardInfo(emptyYearCardInformation);
+        creditPage.emptyField();
     }
 
     @org.junit.jupiter.api.Test
     void shouldPayByCreditCardWithInvalidExpirationDate() {
-        val paymentPage = dashboardPage.payByCreditCard();
+        val creditPage = dashboardPage.payByCreditCard();
         val invalidExpirationDate = DataHelper.getInvalidExpirationDateCardInformation();
-        paymentPage.enterCardInfo(invalidExpirationDate);
-        paymentPage.checkInvalidExpirationDate();
+        creditPage.enterCardInfo(invalidExpirationDate);
+        creditPage.checkInvalidDate();
+    }
+
+    @org.junit.jupiter.api.Test
+    void shouldPayByCreditCardWithEmptyExpirationDate() {
+        val creditPage = dashboardPage.payByCreditCard();
+        val emptyExpirationDate = DataHelper.getEmptyExpirationDateCardInformation();
+        creditPage.enterCardInfo(emptyExpirationDate);
+        creditPage.emptyField();
     }
 
     @org.junit.jupiter.api.Test
     void shouldPayByCreditCardWithExpiredMonth() {
-        val paymentPage = dashboardPage.payByCreditCard();
+        val creditPage = dashboardPage.payByCreditCard();
         val expiredMonth = DataHelper.getExpiredMonthCardInformation();
-        paymentPage.enterCardInfo(expiredMonth);
-        paymentPage.checkExpiredMonthMessage();
+        creditPage.enterCardInfo(expiredMonth);
+        creditPage.checkExpiredDate();
     }
 
     @org.junit.jupiter.api.Test
-    void shouldPayByCreditCardWithEmptyCardInformation() {
-        val paymentPage = dashboardPage.payByCreditCard();
-        val emptyCardInformation = DataHelper.getEmptyCardInformation();
-        paymentPage.enterCardInfo(emptyCardInformation);
-        paymentPage.checkEmptyCardNumberFieldMessage();
-        paymentPage.checkEmptyMonthFieldMessage();
-        paymentPage.checkEmptyYearFieldMessage();
-        paymentPage.checkEmptyOwnerFieldMessage();
-        paymentPage.checkEmptyCvcFieldMessage();
+    void shouldPayByCreditCardWithEmptyMonth() {
+        val creditPage = dashboardPage.payByCreditCard();
+        val emptyMonth = DataHelper.getEmptyMonthCardInformation();
+        creditPage.enterCardInfo(emptyMonth);
+        creditPage.emptyField();
+    }
+
+    @org.junit.jupiter.api.Test
+    void shouldPayByCreditCardWithEmptyCardInformation1() {
+        val creditPage = dashboardPage.payByCreditCard();
+        val validCardInfo = DataHelper.getEmptyCardInformation();
+        creditPage.emptyField();
+        creditPage.enterCardInfo(validCardInfo);
+        creditPage.enterCardInfo(validCardInfo);
+        creditPage.enterCardInfo(validCardInfo);
+        creditPage.enterCardInfo(validCardInfo);
+        creditPage.enterCardInfo(validCardInfo);
+    }
+
+    @org.junit.jupiter.api.Test
+    void shouldPayByCreditCardWithEmptyCardInformation2() {
+        val creditPage = dashboardPage.payByCreditCard();
+        val validCardInfo = DataHelper.getEmptyCardInformation();
+        creditPage.enterCardInfo(validCardInfo);
+        creditPage.emptyField();
+        creditPage.enterCardInfo(validCardInfo);
+        creditPage.enterCardInfo(validCardInfo);
+        creditPage.enterCardInfo(validCardInfo);
+        creditPage.enterCardInfo(validCardInfo);
+    }
+
+    @org.junit.jupiter.api.Test
+    void shouldPayByCreditCardWithEmptyCardInformation3() {
+        val creditPage = dashboardPage.payByCreditCard();
+        val validCardInfo = DataHelper.getEmptyCardInformation();
+        creditPage.enterCardInfo(validCardInfo);
+        creditPage.enterCardInfo(validCardInfo);
+        creditPage.emptyField();
+        creditPage.enterCardInfo(validCardInfo);
+        creditPage.enterCardInfo(validCardInfo);
+        creditPage.enterCardInfo(validCardInfo);
+    }
+
+    @org.junit.jupiter.api.Test
+    void shouldPayByCreditCardWithEmptyCardInformation4() {
+        val creditPage = dashboardPage.payByCreditCard();
+        val validCardInfo = DataHelper.getEmptyCardInformation();
+        creditPage.enterCardInfo(validCardInfo);
+        creditPage.enterCardInfo(validCardInfo);
+        creditPage.enterCardInfo(validCardInfo);
+        creditPage.emptyField();
+        creditPage.enterCardInfo(validCardInfo);
+        creditPage.enterCardInfo(validCardInfo);
+    }
+
+    @org.junit.jupiter.api.Test
+    void shouldPayByCreditCardWithEmptyCardInformation5() {
+        val creditPage = dashboardPage.payByCreditCard();
+        val validCardInfo = DataHelper.getEmptyCardInformation();
+        creditPage.enterCardInfo(validCardInfo);
+        creditPage.enterCardInfo(validCardInfo);
+        creditPage.enterCardInfo(validCardInfo);
+        creditPage.enterCardInfo(validCardInfo);
+        creditPage.emptyField();
+        creditPage.enterCardInfo(validCardInfo);
+    }
+
+    @org.junit.jupiter.api.Test
+    void shouldPayByCreditCardWithEmptyCardInformation6() {
+        val creditPage = dashboardPage.payByCreditCard();
+        val validCardInfo = DataHelper.getEmptyCardInformation();
+        creditPage.enterCardInfo(validCardInfo);
+        creditPage.enterCardInfo(validCardInfo);
+        creditPage.enterCardInfo(validCardInfo);
+        creditPage.enterCardInfo(validCardInfo);
+        creditPage.enterCardInfo(validCardInfo);
+        creditPage.emptyField();
     }
 
     @org.junit.jupiter.api.Test
     void shouldPayByCreditCardWithInvalidOwner() {
-        val paymentPage = dashboardPage.payByCreditCard();
+        val creditPage = dashboardPage.payByCreditCard();
         val invalidOwner = DataHelper.getInvalidOwnerCard();
-        paymentPage.enterCardInfo(invalidOwner);
-        paymentPage.checkInvalidOwner();
+        creditPage.enterCardInfo(invalidOwner);
+        creditPage.checkInvalidFormat();
     }
 
     @org.junit.jupiter.api.Test
-    void shouldPayByCreditCardWithValidCardNumberAndInvalidOtherFields() {
-        val paymentPage = dashboardPage.payByCreditCard();
-        val validCardNumberWithInvalidOtherFields = DataHelper.getValidCardNumberWithInvalidOtherFields();
-        paymentPage.enterCardInfo(validCardNumberWithInvalidOtherFields);
-        paymentPage.checkInvalidMonth();
-        paymentPage.checkInvalidYear();
-        paymentPage.checkInvalidOwner();
-        paymentPage.checkInvalidCvc();
+    void shouldPayByCreditCardWithEmptyOwner() {
+        val creditPage = dashboardPage.payByCreditCard();
+        val emptyOwner = DataHelper.getEmptyOwnerCard();
+        creditPage.enterCardInfo(emptyOwner);
+        creditPage.emptyField();
+    }
+
+    @org.junit.jupiter.api.Test
+    void shouldPayByCreditCardWithInvalidAndNumberAndValidOtherFields1() {
+        val creditPage = dashboardPage.payByCreditCard();
+        val validCardInfo = DataHelper.getValidCardNumberWithInvalidOtherFields();
+        creditPage.checkInvalidFormat();
+        creditPage.enterCardInfo(validCardInfo);
+        creditPage.enterCardInfo(validCardInfo);
+        creditPage.enterCardInfo(validCardInfo);
+        creditPage.enterCardInfo(validCardInfo);
+    }
+
+    @org.junit.jupiter.api.Test
+    void shouldPayByCreditCardWithInvalidAndNumberAndValidOtherFields2() {
+        val creditPage = dashboardPage.payByCreditCard();
+        val validCardInfo = DataHelper.getValidCardNumberWithInvalidOtherFields();
+        creditPage.enterCardInfo(validCardInfo);
+        creditPage.checkInvalidFormat();
+        creditPage.enterCardInfo(validCardInfo);
+        creditPage.enterCardInfo(validCardInfo);
+        creditPage.enterCardInfo(validCardInfo);
+    }
+
+    @org.junit.jupiter.api.Test
+    void shouldPayByCreditCardWithInvalidAndNumberAndValidOtherFields3() {
+        val creditPage = dashboardPage.payByCreditCard();
+        val validCardInfo = DataHelper.getValidCardNumberWithInvalidOtherFields();
+        creditPage.enterCardInfo(validCardInfo);
+        creditPage.enterCardInfo(validCardInfo);
+        creditPage.checkInvalidFormat();
+        creditPage.enterCardInfo(validCardInfo);
+        creditPage.enterCardInfo(validCardInfo);
+    }
+
+    @org.junit.jupiter.api.Test
+    void shouldPayByCreditCardWithInvalidAndNumberAndValidOtherFields4() {
+        val creditPage = dashboardPage.payByCreditCard();
+        val validCardInfo = DataHelper.getValidCardNumberWithInvalidOtherFields();
+        creditPage.enterCardInfo(validCardInfo);
+        creditPage.enterCardInfo(validCardInfo);
+        creditPage.enterCardInfo(validCardInfo);
+        creditPage.checkInvalidFormat();
+        creditPage.enterCardInfo(validCardInfo);
+    }
+
+    @org.junit.jupiter.api.Test
+    void shouldPayByCreditCardWithInvalidAndNumberAndValidOtherFields5() {
+        val creditPage = dashboardPage.payByCreditCard();
+        val validCardInfo = DataHelper.getValidCardNumberWithInvalidOtherFields();
+        creditPage.enterCardInfo(validCardInfo);
+        creditPage.enterCardInfo(validCardInfo);
+        creditPage.enterCardInfo(validCardInfo);
+        creditPage.enterCardInfo(validCardInfo);
+        creditPage.checkInvalidFormat();
     }
 }

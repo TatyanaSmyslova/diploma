@@ -16,11 +16,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class TestDebitCard {
 
-    DashboardPage dashboardPage = new DashboardPage();
+    DashboardPage dashboardPage;
 
     @BeforeEach
     void setup() {
         open("http://localhost:8080");
+        dashboardPage = new DashboardPage();
         Selenide.clearBrowserCookies();
         Selenide.clearBrowserLocalStorage();
     }
@@ -41,7 +42,7 @@ public class TestDebitCard {
         val paymentPage = dashboardPage.payByDebitCard();
         val approvedCardInformation = DataHelper.getApprovedCardInformation();
         paymentPage.enterCardInfo(approvedCardInformation);
-        paymentPage.waitSuccessNotification();
+        paymentPage.checkSuccessNotification();
         val paymentStatus = DbHelper.getPaymentEntity();
         assertEquals("APPROVED", paymentStatus);
     }
@@ -51,7 +52,7 @@ public class TestDebitCard {
         val paymentPage = dashboardPage.payByDebitCard();
         val declinedCardInformation = DataHelper.getDeclinedCardInformation();
         paymentPage.enterCardInfo(declinedCardInformation);
-        paymentPage.waitErrorNotification();
+        paymentPage.checkDeclineNotification();
         val paymentStatus = DbHelper.getPaymentEntity();
         assertEquals("DECLINED", paymentStatus);
     }
@@ -61,7 +62,15 @@ public class TestDebitCard {
         val paymentPage = dashboardPage.payByDebitCard();
         val invalidCardInformation = DataHelper.getInvalidCardInformation();
         paymentPage.enterCardInfo(invalidCardInformation);
-        paymentPage.checkInvalidCardNumber();
+        paymentPage.checkInvalidFormat();
+    }
+
+    @org.junit.jupiter.api.Test
+    void shouldPayByDebitCardWithEmptyFieldNumber() {
+        val paymentPage = dashboardPage.payByDebitCard();
+        val emptyCardInformation = DataHelper.getEmptyCardInformation();
+        paymentPage.enterCardInfo(emptyCardInformation);
+        paymentPage.emptyField();
     }
 
     @org.junit.jupiter.api.Test
@@ -69,7 +78,15 @@ public class TestDebitCard {
         val paymentPage = dashboardPage.payByDebitCard();
         val expiredYearCardInformation = DataHelper.getExpiredYearCardInformation();
         paymentPage.enterCardInfo(expiredYearCardInformation);
-        paymentPage.checkExpiredYearMessage();
+        paymentPage.checkExpiredDate();
+    }
+
+    @org.junit.jupiter.api.Test
+    void shouldPayByDebitCardWithEmptyFieldYear() {
+        val paymentPage = dashboardPage.payByDebitCard();
+        val emptyYearCardInformation = DataHelper.getEmptyYearCardInformation();
+        paymentPage.enterCardInfo(emptyYearCardInformation);
+        paymentPage.emptyField();
     }
 
     @org.junit.jupiter.api.Test
@@ -77,7 +94,15 @@ public class TestDebitCard {
         val paymentPage = dashboardPage.payByDebitCard();
         val invalidExpirationDate = DataHelper.getInvalidExpirationDateCardInformation();
         paymentPage.enterCardInfo(invalidExpirationDate);
-        paymentPage.checkInvalidExpirationDate();
+        paymentPage.checkInvalidDate();
+    }
+
+    @org.junit.jupiter.api.Test
+    void shouldPayByDebitCardWithEmptyExpirationDate() {
+        val paymentPage = dashboardPage.payByDebitCard();
+        val emptyExpirationDate = DataHelper.getEmptyExpirationDateCardInformation();
+        paymentPage.enterCardInfo(emptyExpirationDate);
+        paymentPage.emptyField();
     }
 
     @org.junit.jupiter.api.Test
@@ -85,19 +110,87 @@ public class TestDebitCard {
         val paymentPage = dashboardPage.payByDebitCard();
         val expiredMonth = DataHelper.getExpiredMonthCardInformation();
         paymentPage.enterCardInfo(expiredMonth);
-        paymentPage.checkExpiredMonthMessage();
+        paymentPage.checkExpiredDate();
     }
 
     @org.junit.jupiter.api.Test
-    void shouldPayByDebitCardWithEmptyCardInformation() {
+    void shouldPayByDebitCardWithEmptyMonth() {
         val paymentPage = dashboardPage.payByDebitCard();
-        val emptyCardInformation = DataHelper.getEmptyCardInformation();
-        paymentPage.enterCardInfo(emptyCardInformation);
-        paymentPage.checkEmptyCardNumberFieldMessage();
-        paymentPage.checkEmptyMonthFieldMessage();
-        paymentPage.checkEmptyYearFieldMessage();
-        paymentPage.checkEmptyOwnerFieldMessage();
-        paymentPage.checkEmptyCvcFieldMessage();
+        val emptyMonth = DataHelper.getEmptyMonthCardInformation();
+        paymentPage.enterCardInfo(emptyMonth);
+        paymentPage.emptyField();
+    }
+
+    @org.junit.jupiter.api.Test
+    void shouldPayByDebitCardWithEmptyCardInformation1() {
+        val paymentPage = dashboardPage.payByDebitCard();
+        val validCardInfo = DataHelper.getEmptyCardInformation();
+        paymentPage.emptyField();
+        paymentPage.enterCardInfo(validCardInfo);
+        paymentPage.enterCardInfo(validCardInfo);
+        paymentPage.enterCardInfo(validCardInfo);
+        paymentPage.enterCardInfo(validCardInfo);
+        paymentPage.enterCardInfo(validCardInfo);
+    }
+
+    @org.junit.jupiter.api.Test
+    void shouldPayByDebitCardWithEmptyCardInformation2() {
+        val paymentPage = dashboardPage.payByDebitCard();
+        val validCardInfo = DataHelper.getEmptyCardInformation();
+        paymentPage.enterCardInfo(validCardInfo);
+        paymentPage.emptyField();
+        paymentPage.enterCardInfo(validCardInfo);
+        paymentPage.enterCardInfo(validCardInfo);
+        paymentPage.enterCardInfo(validCardInfo);
+        paymentPage.enterCardInfo(validCardInfo);
+    }
+
+    @org.junit.jupiter.api.Test
+    void shouldPayByDebitCardWithEmptyCardInformation3() {
+        val paymentPage = dashboardPage.payByDebitCard();
+        val validCardInfo = DataHelper.getEmptyCardInformation();
+        paymentPage.enterCardInfo(validCardInfo);
+        paymentPage.enterCardInfo(validCardInfo);
+        paymentPage.emptyField();
+        paymentPage.enterCardInfo(validCardInfo);
+        paymentPage.enterCardInfo(validCardInfo);
+        paymentPage.enterCardInfo(validCardInfo);
+    }
+
+    @org.junit.jupiter.api.Test
+    void shouldPayByDebitCardWithEmptyCardInformation4() {
+        val paymentPage = dashboardPage.payByDebitCard();
+        val validCardInfo = DataHelper.getEmptyCardInformation();
+        paymentPage.enterCardInfo(validCardInfo);
+        paymentPage.enterCardInfo(validCardInfo);
+        paymentPage.enterCardInfo(validCardInfo);
+        paymentPage.emptyField();
+        paymentPage.enterCardInfo(validCardInfo);
+        paymentPage.enterCardInfo(validCardInfo);
+    }
+
+    @org.junit.jupiter.api.Test
+    void shouldPayByDebitCardWithEmptyCardInformation5() {
+        val paymentPage = dashboardPage.payByDebitCard();
+        val validCardInfo = DataHelper.getEmptyCardInformation();
+        paymentPage.enterCardInfo(validCardInfo);
+        paymentPage.enterCardInfo(validCardInfo);
+        paymentPage.enterCardInfo(validCardInfo);
+        paymentPage.enterCardInfo(validCardInfo);
+        paymentPage.emptyField();
+        paymentPage.enterCardInfo(validCardInfo);
+    }
+
+    @org.junit.jupiter.api.Test
+    void shouldPayByDebitCardWithEmptyCardInformation6() {
+        val paymentPage = dashboardPage.payByDebitCard();
+        val validCardInfo = DataHelper.getEmptyCardInformation();
+        paymentPage.enterCardInfo(validCardInfo);
+        paymentPage.enterCardInfo(validCardInfo);
+        paymentPage.enterCardInfo(validCardInfo);
+        paymentPage.enterCardInfo(validCardInfo);
+        paymentPage.enterCardInfo(validCardInfo);
+        paymentPage.emptyField();
     }
 
     @org.junit.jupiter.api.Test
@@ -105,17 +198,69 @@ public class TestDebitCard {
         val paymentPage = dashboardPage.payByDebitCard();
         val invalidOwner = DataHelper.getInvalidOwnerCard();
         paymentPage.enterCardInfo(invalidOwner);
-        paymentPage.checkInvalidOwner();
+        paymentPage.checkInvalidFormat();
     }
 
     @org.junit.jupiter.api.Test
-    void shouldPayByDebitCardWithValidCardNumberAndInvalidOtherFields() {
+    void shouldPayByDebitCardWithEmptyOwner() {
         val paymentPage = dashboardPage.payByDebitCard();
-        val validCardNumberWithInvalidOtherFields = DataHelper.getValidCardNumberWithInvalidOtherFields();
-        paymentPage.enterCardInfo(validCardNumberWithInvalidOtherFields);
-        paymentPage.checkInvalidMonth();
-        paymentPage.checkInvalidYear();
-        paymentPage.checkInvalidOwner();
-        paymentPage.checkInvalidCvc();
+        val emptyOwner = DataHelper.getEmptyOwnerCard();
+        paymentPage.enterCardInfo(emptyOwner);
+        paymentPage.emptyField();
+    }
+
+    @org.junit.jupiter.api.Test
+    void shouldPayByDebitCardWithInvalidAndNumberAndValidOtherFields1() {
+        val paymentPage = dashboardPage.payByDebitCard();
+        val validCardInfo = DataHelper.getValidCardNumberWithInvalidOtherFields();
+        paymentPage.checkInvalidFormat();
+        paymentPage.enterCardInfo(validCardInfo);
+        paymentPage.enterCardInfo(validCardInfo);
+        paymentPage.enterCardInfo(validCardInfo);
+        paymentPage.enterCardInfo(validCardInfo);
+    }
+
+    @org.junit.jupiter.api.Test
+    void shouldPayByDebitCardWithInvalidAndNumberAndValidOtherFields2() {
+        val paymentPage = dashboardPage.payByDebitCard();
+        val validCardInfo = DataHelper.getValidCardNumberWithInvalidOtherFields();
+        paymentPage.enterCardInfo(validCardInfo);
+        paymentPage.checkInvalidFormat();
+        paymentPage.enterCardInfo(validCardInfo);
+        paymentPage.enterCardInfo(validCardInfo);
+        paymentPage.enterCardInfo(validCardInfo);
+    }
+
+    @org.junit.jupiter.api.Test
+    void shouldPayByDebitCardWithInvalidAndNumberAndValidOtherFields3() {
+        val paymentPage = dashboardPage.payByDebitCard();
+        val validCardInfo = DataHelper.getValidCardNumberWithInvalidOtherFields();
+        paymentPage.enterCardInfo(validCardInfo);
+        paymentPage.enterCardInfo(validCardInfo);
+        paymentPage.checkInvalidFormat();
+        paymentPage.enterCardInfo(validCardInfo);
+        paymentPage.enterCardInfo(validCardInfo);
+    }
+
+    @org.junit.jupiter.api.Test
+    void shouldPayByDebitCardWithInvalidAndNumberAndValidOtherFields4() {
+        val paymentPage = dashboardPage.payByDebitCard();
+        val validCardInfo = DataHelper.getValidCardNumberWithInvalidOtherFields();
+        paymentPage.enterCardInfo(validCardInfo);
+        paymentPage.enterCardInfo(validCardInfo);
+        paymentPage.enterCardInfo(validCardInfo);
+        paymentPage.checkInvalidFormat();
+        paymentPage.enterCardInfo(validCardInfo);
+    }
+
+    @org.junit.jupiter.api.Test
+    void shouldPayByDebitCardWithInvalidAndNumberAndValidOtherFields5() {
+        val paymentPage = dashboardPage.payByDebitCard();
+        val validCardInfo = DataHelper.getValidCardNumberWithInvalidOtherFields();
+        paymentPage.enterCardInfo(validCardInfo);
+        paymentPage.enterCardInfo(validCardInfo);
+        paymentPage.enterCardInfo(validCardInfo);
+        paymentPage.enterCardInfo(validCardInfo);
+        paymentPage.checkInvalidFormat();
     }
 }
